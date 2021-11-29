@@ -14,15 +14,17 @@ struct UninterStudentNode
     char name[50] = "";
     char email[50] = "";
     int RU = 0;
-    UninterStudentNode* left = NULL;
-    UninterStudentNode* right = NULL;
-} *Root;
+    struct UninterStudentNode *left, *right;
+};
+
+UninterStudentNode *Root_ptr = NULL;
 
 void draw_menu();
 int read_int_input();
 void clear_keyboard_buffer();
 void input_RU_search();
 void insert_student(const char* name, const char* email, int RU);
+void insert_student(UninterStudentNode* searching_node_ptr, UninterStudentNode* new_student_ptr);
 void generate_students_records_for_BST();
 
 int main()
@@ -119,19 +121,80 @@ void input_RU_search()
 void insert_student(const char* name, const char* email, int RU)
 {
     // aloca memoria para inserir um novo aluno na arvore
-    UninterStudentNode* new_student = (UninterStudentNode*)malloc(sizeof(UninterStudentNode));
+    UninterStudentNode* new_student_ptr = (UninterStudentNode*)malloc(sizeof(UninterStudentNode));
 
     // preenche o nodo com os dados do aluno
-    strcpy_s(new_student->name, name);
-    strcpy_s(new_student->email, email);
-    new_student->RU = RU;
+    strcpy_s(new_student_ptr->name, name);
+    strcpy_s(new_student_ptr->email, email);
+    new_student_ptr->RU = RU;
 
-    // arvore esta vazia
-    if (Root == NULL)
+    // insercao e sempre como folha, portanto o novo nodo nao vai ter filhos
+    new_student_ptr->left = NULL;
+    new_student_ptr->right = NULL;
+
+    // arvore esta vazia, entao o novo element se torna a raiz
+    if (!Root_ptr)
     {
-        Root = new_student;
+        Root_ptr = new_student_ptr;
         return;
     }
+
+    // insere passando o root como elemento por onde inicia a pesquisa da posicao a ser inserida na BST 
+    insert_student(Root_ptr, new_student_ptr);
+}
+
+/// <summary>
+/// Insere na BST procurando nodo livre adequado utilizando recursao.
+/// </summary>
+/// <param name="searching_node_ptr">Ponteiro para o nodo a ser pesquisado nessa chamada.</param>
+/// <param name="new_student_ptr">Ponteiro para dados a serem inseridos.</param>
+void insert_student(UninterStudentNode* searching_node_ptr, UninterStudentNode* new_student_ptr)
+{
+    // se valor do RU a ser inserido MENOR que o do nodo pesquisado atual, entao anda para ESQUERDA
+    if (new_student_ptr->RU < searching_node_ptr->RU)
+    {
+        // se o nodo da ESQUERDA esta vazio entao ele aponta para o novo registro
+        if (!searching_node_ptr->left)
+        {
+            searching_node_ptr->left = new_student_ptr;
+
+            // novo elemento foi inserido na BST, entao ENCERRA a pesquisa
+            return;
+        }
+
+        // o elemento do lado ESQUERDO do nodo pesquisado JA ESTA PREENCHIDO, 
+        //entao continua a pesquisa a partir dele com uma chamada recursiva
+        insert_student(searching_node_ptr->left, new_student_ptr);
+        return;
+    }
+
+    // se valor do RU a ser inserido MAIOR que o do nodo pesquisado atual, entao anda para DIREITA
+    if (new_student_ptr->RU > searching_node_ptr->RU)
+    {
+        // se o nodo da DIREITA esta vazio ele aponta para o novo registro
+        if (!searching_node_ptr->right)
+        {
+            searching_node_ptr->right = new_student_ptr;
+
+            // novo elemento foi inserido na BST, entao ENCERRA a pesquisa
+            return;
+        }
+
+        // o elemento do lado DIREITO di nodo pesquisado JA ESTA PREENCHIDO, 
+        //entao continua a pesquisa a partir dele com uma chamada recursiva
+        insert_student(searching_node_ptr->right, new_student_ptr);
+        return;
+    }
+
+    // Tratamento de erro para caso tente-se inserir 2 alunos com o mesmo RU
+    printf("O RU '%d' do aluno '%s' ('%s') que esta sendo inserido nao e menor nem maior que nenhum outro RU!\n", 
+        new_student_ptr->RU,
+        new_student_ptr->name,
+        new_student_ptr->email);
+    printf("Por tanto, ELE JA EXISTE. O dado nao sera inserido na BST. \n"); 
+    printf("Pressione qualquer tecla para continuae a execucao do programa.\n\n");
+
+    system("pause");
 }
 
 void generate_students_records_for_BST()
