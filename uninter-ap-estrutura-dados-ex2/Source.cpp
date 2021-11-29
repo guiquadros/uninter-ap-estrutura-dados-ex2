@@ -282,7 +282,7 @@ void generate_students_records_for_BST()
     // 17
     insert_student("Pita",
         "pitap@gmail.com",
-        3465735);
+        6669997);
 
     // 18
     insert_student("Pota",
