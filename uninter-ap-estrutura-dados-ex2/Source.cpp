@@ -17,6 +17,7 @@ struct UninterStudentNode
     struct UninterStudentNode *left, *right;
 };
 
+// ponteiro para raiz da BST
 UninterStudentNode *Root_ptr = NULL;
 
 void draw_menu();
