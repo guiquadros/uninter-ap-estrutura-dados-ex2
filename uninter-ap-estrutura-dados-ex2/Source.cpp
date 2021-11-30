@@ -24,6 +24,8 @@ void draw_menu();
 int read_int_input();
 void clear_keyboard_buffer();
 void input_RU_search();
+void search_student_and_print(UninterStudentNode* student_ptr, int RU);
+void print_student_data(UninterStudentNode* student_ptr);
 void insert_student(const char* name, const char* email, int RU);
 void insert_student(UninterStudentNode* searching_node_ptr, UninterStudentNode* new_student_ptr);
 void generate_students_records_for_BST();
@@ -112,11 +114,57 @@ void clear_keyboard_buffer()
 
 void input_RU_search()
 {
-    int RU_search = 0;
-    printf("Informe o RU do aluno a ser buscado: ");
-    RU_search = read_int_input();
+	printf("Informe o RU do aluno a ser buscado: ");
+	const int RU_search = read_int_input();
 
-    // TODO: search for this RU
+    // procura pelo aluno (a partir do root) com base no RU e aponta student_ptr para o nodo correspondente 
+	search_student_and_print(Root_ptr, RU_search);
+}
+
+void search_student_and_print(UninterStudentNode* student_ptr, int RU)
+{
+    // se nenhum aluno encontrato com o RU pesquisado, entao imprime a mensagem de erro
+    if (!student_ptr)
+    {
+        printf("ALUNO COM O RU '%d' NAO ESTA CADASTRADO!\n\n", RU);
+        return;
+    }
+
+    // se aluno encontrado entao imprime os dados do mesmo
+    if (RU == student_ptr->RU)
+    {
+        print_student_data(student_ptr);
+	    return;
+    }
+
+    // se o RU for MENOR que o do nodo pesquisado atual, entao aluno esta a ESQUERDA do nodo atual
+    if (RU < student_ptr->RU)
+    {
+        // chamada recursiva com o ponteiro da ESQUERDA do nodo pesquisado
+        search_student_and_print(student_ptr->left, RU);
+        return;
+    }
+
+    // se o RU for MAIOR que o do nodo pesquisado atual, entao aluno esta a DIREITA do nodo atual
+    if (RU > student_ptr->RU)
+    {
+        // chamada recursiva com o ponteiro da DIREITA do nodo pesquisado
+        search_student_and_print(student_ptr->right, RU);
+        return;
+    }
+
+    // o programa nunca deve chegar nesse linha, o RU informado sempre sera igual, menor ou maior que algum outro RU e a execucao ira terminar em um return;
+}
+
+void print_student_data(UninterStudentNode* student_ptr)
+{
+    system("cls");
+
+    printf("Dados do aluno encontrado: \n\n");
+
+    printf("- Nome: %s\n", student_ptr->name);
+    printf("- E-mail: %s\n", student_ptr->email);
+    printf("- RU: %d\n\n", student_ptr->RU);
 }
 
 void insert_student(const char* name, const char* email, int RU)
