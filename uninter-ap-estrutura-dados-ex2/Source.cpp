@@ -240,7 +240,7 @@ void insert_student(UninterStudentNode* searching_node_ptr, UninterStudentNode* 
         new_student_ptr->RU,
         new_student_ptr->name,
         new_student_ptr->email);
-    printf("Por tanto, ELE JA EXISTE. O dado nao sera inserido na BST. \n"); 
+    printf("Portanto, ELE JA EXISTE. O dado nao sera inserido na BST. \n"); 
     printf("Pressione qualquer tecla para continuae a execucao do programa.\n\n");
 
     system("pause");
